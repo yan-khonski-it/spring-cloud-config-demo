@@ -1,0 +1,27 @@
+version: '2.1'
+
+networks:
+  scc-demo-network:
+    name: scc-demo-network
+    driver: bridge
+
+
+services:
+  config-service:
+    build:
+      context: "./config-service"
+      dockerfile: Dockerfile
+    container_name: config-service
+    volumes:
+      - "./configuration:/configuration:ro"
+    environment:
+      - "SPRING_PROFILE=native"
+      - "SPRING_CLOUD_CONFIG_PROFILE=dev"
+      - "GIT_REPOSITORY_URI=https://github.com/yan-khonski-it/spring-cloud-config-demo"
+
+      # Label
+      - "GIT_BRANCH=dev"
+    networks:
+      - scc-demo-network
+    ports:
+    - 8888:8888

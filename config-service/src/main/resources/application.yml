@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: config-service
+  profiles:
+    active: ${SPRING_PROFILE:git}
+
+  cloud:
+
+    config:
+      server:
+        native:
+          search-locations: file:/configuration
+        git:
+          uri: ${GIT_REPOSITORY_URI}
+          clone-on-start: true
+          default-label: ${GIT_BRANCH}
+
+        default-profile: ${SPRING_CLOUD_CONFIG_PROFILE}
+        default-label: ${GIT_BRANCH}
+
+server:
+  port: 8888
