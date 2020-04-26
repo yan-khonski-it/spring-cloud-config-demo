@@ -42,3 +42,46 @@ Response
     "path": "/service2/dev"
 }
 ```
+
+## How to debug
+
+#### 1) Create remote debug configuration in your IDE.
+
+#### 2) Add `JAVA_OPTIONS` to the service you want to debug.
+```
+- "JAVA_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+```
+
+#### 3) Open ports.
+```.env
+ports:
+  - 5005:5005
+```
+
+#### 4) Total example.
+```.yaml
+  config-service:
+    build:
+      context: "./config-service"
+      dockerfile: Dockerfile
+    container_name: config-service
+    volumes:
+      - "./configuration:/configuration:ro"
+    environment:
+      - "SPRING_PROFILE=native"
+      - "SPRING_CLOUD_CONFIG_PROFILE=dev"
+      - "GIT_REPOSITORY_URI=https://github.com/yan-khonski-it/spring-cloud-config-demo"
+      
+      # Debug the service
+      - "JAVA_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+
+      # Label
+      - "GIT_BRANCH=dev"
+    networks:
+      - scc-demo-network
+    ports:
+      - 8888:8888
+
+    # Open debug port
+      - 5005:5005
+```
